@@ -1,6 +1,18 @@
 from django.db import models
 from django.conf import settings
 
+CATERGORY_CHOICES = (
+    ('S', 'Shirt'),
+    ('SW', 'Sport Wear'),
+    ('OW', 'Outwear')
+)
+
+LABEL_CHOICES = (
+    ('P', 'primary'),
+    ('S', 'secondary'),
+    ('F', 'danger'),
+)
+
 class Item(models.Model):
     title = models.CharField(max_length=50)
     price = models.FloatField()
