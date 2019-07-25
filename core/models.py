@@ -1,24 +1,28 @@
 from django.db import models
 from django.conf import settings
+from django.shortcuts import reverse
 
-CATERGORY_CHOICES = (
-    ('S', 'Shirt'),
-    ('SW', 'Sport Wear'),
-    ('OW', 'Outwear')
-)
 
-LABEL_CHOICES = (
-    ('P', 'primary'),
-    ('S', 'secondary'),
-    ('F', 'danger'),
-)
+CATERGORY_CHOICES = (("S", "Shirt"), ("SW", "Sport Wear"), ("OW", "Outwear"))
+
+LABEL_CHOICES = (("P", "primary"), ("S", "secondary"), ("F", "danger"))
+
 
 class Item(models.Model):
     title = models.CharField(max_length=50)
     price = models.FloatField()
+    discount_price = models.FloatField(blank=True, null=True)
+    category = models.CharField(choices=CATERGORY_CHOICES, max_length=50, default="S")
+    label = models.CharField(choices=LABEL_CHOICES, max_length=1, default="P")
+    description = models.TextField(
+        default="Lorem ipsum dolor sit amet consectetur adipisicing elit. Quidem id asperiores soluta aut sunt, recusandae sit iusto?"
+    )
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse("core:product", kwargs={"pk": self.pk})
 
 
 class OrderItem(models.Model):
@@ -37,3 +41,4 @@ class Order(models.Model):
 
     def __str__(self):
         return self.user.username
+
