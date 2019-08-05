@@ -2,7 +2,7 @@
     <div class="container">
 
         <!-- Brand -->
-        <a class="navbar-brand waves-effect" href="" target="_blank">
+        <a class="navbar-brand waves-effect" href="{% url 'core:home' %}">
             <strong class="blue-text">Zeekara</strong>
         </a>
 
@@ -17,14 +17,14 @@
 
             <!-- Left -->
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link waves-effect" href="{% url 'core:home' %}">Home
+                <!-- <li class="nav-item active">
+                    <a class="nav-link waves-effect" href="">Home
                         <span class="sr-only">(current)</span>
                     </a>
                 </li>
-                <!-- 
+
                 <li class="nav-item">
-                    <a class="nav-link waves-effect" href="{% url 'core:product' %}">Product
+                    <a class="nav-link waves-effect">Products
                     </a>
                 </li> -->
 
@@ -32,6 +32,9 @@
 
             <!-- Right -->
             <ul class="navbar-nav nav-flex-icons">
+
+                {% if request.user.is_authenticated %}
+
                 <li class="nav-item">
                     <a class="nav-link waves-effect">
                         <span class="badge red z-depth-1 mr-1"> 1 </span>
@@ -39,21 +42,27 @@
                         <span class="clearfix d-none d-sm-inline-block"> Cart </span>
                     </a>
                 </li>
-                <!-- <li class="nav-item">
-                    <a href="https://www.facebook.com/mdbootstrap" class="nav-link waves-effect" target="_blank">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                </li> -->
-                <!-- <li class="nav-item">
-                    <a href="" class="nav-link waves-effect" target="_blank">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                </li> -->
                 <li class="nav-item">
-                    <a href="{% url 'core:checkout' %}" class="nav-link border border-light rounded waves-effect">
-                        Checkout
+                    <a class="nav-link waves-effect" href=" {% url 'account_logout' %} ">
+                        <span class=" clearfix d-none d-sm-inline-block"> Logout </span>
                     </a>
                 </li>
+
+                {% else %}
+
+                <li class="nav-item">
+                    <a class="nav-link waves-effect" href=" {% url 'account_login' %} ">
+                        <span class=" clearfix d-none d-sm-inline-block"> Login </span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link waves-effect" href=" {% url 'account_signup' %} ">
+                        <span class=" clearfix d-none d-sm-inline-block"> Sign Up </span>
+                    </a>
+                </li>
+                {% endif %}
+
             </ul>
 
         </div>

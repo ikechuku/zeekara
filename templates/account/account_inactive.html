@@ -1,0 +1,23 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Account Inactive" %}{% endblock %}
+
+{% block content %}
+
+<section class="mb-4">
+
+    <!--Grid row-->
+    <div class="row wow fadeIn">
+        <div class="col-6 offset-3">
+
+            <h1>{% trans "Account Inactive" %}</h1>
+
+            <p>{% trans "This account is inactive." %}</p>
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}

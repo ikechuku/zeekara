@@ -17,7 +17,7 @@ def checkout(request):
 
 class HomeView(ListView):
     model = Item
-    template_name = "home-page.html"
+    template_name = "home.html"
 
 
 class ItemDetailView(DetailView):
