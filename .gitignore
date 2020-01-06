@@ -1,1 +1,7 @@
-env
+.env
+*.pyc
+.idea/vcs.xml
+.idea
+.vscode
+*__pycache__
+development.py
