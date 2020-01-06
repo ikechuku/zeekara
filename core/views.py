@@ -1,9 +1,11 @@
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, View
 from .models import Item, Order, OrderItem
 from django.utils import timezone
-
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 def products(request):
     context = {"items": Item.objects.all()}
@@ -17,15 +19,30 @@ def checkout(request):
 
 class HomeView(ListView):
     model = Item
-    paginate_by = 5
+    paginate_by = 2
     template_name = "home.html"
+
+
+class OrderSummaryView(LoginRequiredMixin, DetailView):
+    def get(self, *args, **kwargs):
+        try: 
+            order = Order.objects.get(user=self.request.user, ordered=False)
+        except ObjectDoesNotExist:
+            messages.error(self.request, "You do not have and active order")
+            return redirect("/")    
+        context = {
+            'object':order
+        }
+
+        return render(self.request,  "order_summary.html", context)
+
 
 
 class ItemDetailView(DetailView):
     model = Item
     template_name = "product.html"
 
-
+@login_required
 def add_to_cart(request, pk):
     item = get_object_or_404(Item, pk=pk)
     order_item, created = OrderItem.objects.get_or_create(
@@ -53,7 +70,7 @@ def add_to_cart(request, pk):
 
     return redirect("core:product", pk=pk)
 
-
+@login_required
 def remove_from_cart(request, pk):
     item = get_object_or_404(Item, pk=pk)
     order_qs = Order.objects.filter(user=request.user, ordered=False)
