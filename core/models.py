@@ -21,7 +21,7 @@ class Item(models.Model):
     def __str__(self):
         return self.title
 
-    def get_absolute_url(self):
+    def  get_absolute_url(self):
         return reverse("core:product", kwargs={"pk": self.pk})
 
     def get_add_to_cart_url(self):
@@ -40,7 +40,20 @@ class OrderItem(models.Model):
     def __str__(self):
         return f"{self.quantity} of {self.item.title}"
 
-
+    def get_total_price(self):
+        return self.quantity * self.item.price
+    
+    def get_total_discount_price(self):
+        return self.quantity * self.item.discount_price
+        
+    def get_amount_saved(self):
+        saved = self.get_total_price() - self.get_total_discount_price
+        return saved
+    
+    def get_percentage_saved(self):
+        saved = self.get_total_price() - self.get_total_discount_price
+        percentage_saved = saved/self.get_total_price() * 100
+        return percentage_saved
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     items = models.ManyToManyField(OrderItem)
