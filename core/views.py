@@ -13,6 +13,19 @@ def products(request):
     return render(request, "product-page.html", context)
 
 
+class checkoutView(View):
+    def get(self, *args, **kwargs):
+        form = CheckoutForm()
+        context = {
+            "form": form
+        }
+        return render(self.request, "checkout.html", context)
+
+    def post(self, *args, **kwargs):
+        form = CheckoutForm(self.request.POST or None)
+        if form.is_valid():
+            print("The form is valid")
+            return redirect('core:checkout')
 
 class HomeView(ListView):
     model = Item
