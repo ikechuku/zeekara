@@ -6,15 +6,12 @@ from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from .forms import CheckoutForm
 
 def products(request):
     context = {"items": Item.objects.all()}
     return render(request, "product-page.html", context)
 
-
-def checkout(request):
-    context = {"items": Item.objects.all()}
-    return render(request, "checkout-page.html", context)
 
 
 class HomeView(ListView):
@@ -33,7 +30,7 @@ class OrderSummaryView(LoginRequiredMixin, DetailView):
         context = {
             'object':order
         }
-
+ 
         return render(self.request,  "order_summary.html", context)
 
 
@@ -56,7 +53,7 @@ def add_to_cart(request, pk):
         if order.items.filter(item__pk=item.pk).exists():
             order_item.quantity += 1
             order_item.save()
-            messages.info(request, "Quantity updated Successfully")
+            messages.info(request, "This item quantity updated")
 
         else:
             messages.info(request, "Item added Successfully")
@@ -68,7 +65,7 @@ def add_to_cart(request, pk):
         order.items.add(order_item)
         messages.info(request, "Item added Successfully")
 
-    return redirect("core:product", pk=pk)
+    return redirect("core:order-summary")
 
 @login_required
 def remove_from_cart(request, pk):
@@ -83,7 +80,8 @@ def remove_from_cart(request, pk):
                 item=item, user=request.user, ordered=False
             )[0]
             order.items.remove(order_item)
-            messages.info(request, "Item removed Successfully")
+            messages.info(request, "Item removed from your cart")
+            return redirect("core:order-summary")
 
         else:
             messages.info(request, "This Item was not in your cart")
@@ -95,3 +93,36 @@ def remove_from_cart(request, pk):
         return redirect("core:product", pk=pk)
     return redirect("core:product", pk=pk)
 
+
+
+@login_required
+def remove_single_item_from_cart(request, pk):
+    item = get_object_or_404(Item, pk=pk)
+    order_qs = Order.objects.filter(user=request.user, ordered=False)
+
+    if order_qs.exists():
+        order = order_qs[0]
+        # check if the ordered item is already in the order
+        if order.items.filter(item__pk=item.pk).exists():
+            order_item = OrderItem.objects.filter(
+                item=item, 
+                user=request.user, 
+                ordered=False
+            )[0]
+            if order_item.quantity > 1:
+                order_item.quantity -= 1
+                order_item.save()
+            else:
+                order.items.remove(order_item)
+            messages.info(request, "This item's quantity updated")
+            return redirect("core:order-summary")
+
+        else:
+            messages.info(request, "This Item was not in your cart")
+            return redirect("core:order-summary")
+
+    else:
+        # add a message saying the user doesnt have an order
+        messages.info(request, "You dont have an active order")
+        return redirect("core:order-summary")
+    return redirect("core:order-summary")
