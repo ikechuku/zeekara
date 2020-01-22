@@ -76,3 +76,5 @@ class Order(models.Model):
             total += order_item.get_final_price()
         return round(total, 2)
     
+    def count(self):
+        return self.items.count()

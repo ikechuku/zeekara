@@ -16,8 +16,10 @@ def products(request):
 class checkoutView(View):
     def get(self, *args, **kwargs):
         form = CheckoutForm()
+        order = Order.objects.get(user=self.request.user, ordered=False)
         context = {
-            "form": form
+            "form": form,
+            "object": order
         }
         return render(self.request, "checkout.html", context)
 
