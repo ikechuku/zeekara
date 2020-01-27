@@ -1,11 +1,20 @@
 language: python
 python:
-  - "3.6"      # current default Python on Travis CI
+  - "3.6"
 
-# command to install dependencies
-install:
-  - pip install -r requirements.txt
+services:
+  - docker
 
-# command to run tests
+before_script: pip install docker-compose
+
 script:
-  - python managa.py test`
+  - docker-compose run web sh -c "python3 manage.py test"
+
+before_deploy:
+deploy:
+  provider: heroku
+  api_key:
+    secure: 53982ccb-6537-48cf-bd62-4d51807bdc47
+  app: fierce-fortress-64893
+  on:
+    repo: ikechuku/moviers-backend
