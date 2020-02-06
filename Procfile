@@ -1,1 +1,1 @@
-'web: gunicorn zeekara.wsgi --log-file -' 
+'web: gunicorn zeekara.wsgi --log-file' 
