@@ -2,4 +2,4 @@ build:
   docker:
     web: Dockerfile
 run:
-  web: gunicorn zeekara.wsgi
+  web: gunicorn zeekara.wsgi:application --bind 0.0.0.0:$PORT
