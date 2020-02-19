@@ -14,4 +14,4 @@ RUN python manage.py collectstatic --noinput
 RUN adduser -D myuser
 USER myuser
 
-CMD gunicorn movierec.wsgi:application --bind 0.0.0.0:$PORT\
+CMD gunicorn zeekara.wsgi:application --bind 0.0.0.0:$PORT\
